@@ -47,8 +47,6 @@ const MORSE2ALPHA = {
 
 const ALPHA2MORSE = Object.fromEntries(Object.keys(MORSE2ALPHA).map((k) => [MORSE2ALPHA[k], k]));
 
-const SEPARATEPULSES = /(0+|1+)/g;
-
 module.exports = {
   DIT,
   DAH,
@@ -57,5 +55,4 @@ module.exports = {
   WORDSEP,
   ALPHA2MORSE,
   MORSE2ALPHA,
-  SEPARATEPULSES
 };

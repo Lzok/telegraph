@@ -1,0 +1,82 @@
+{
+  "name": "telegraph",
+  "version": "0.0.1",
+  "description": "Telegraph to help us converting a string of bits into morse code or human readable text.",
+  "author": "Leandro Echevarria <EchevarriaLeandro@gmail.com>",
+  "main": "src/index.js",
+  "private": false,
+  "license": "AGPL-3.0",
+  "engines": {
+    "node": "12.16.3"
+  },
+  "scripts": {
+    "precommit": "lint-staged && npm run test:unit",
+    "prestart": "npm run docs",
+    "start:pm2": "cross-env NODE_ENV=production pm2 --name \"telegraph\" start ./src/index.js -i 0 -f",
+    "stop:pm2": "pm2 stop \"telegraph\"",
+    "dev": "nodemon ./src/index.js",
+    "lint": "eslint ./src/ --ignore-path .gitignore",
+    "lint:fix": "npm run lint --fix",
+    "lint:watch": "npm run lint --watch",
+    "pretty": "prettier-eslint --write",
+    "test": "cross-env NODE_ENV=test nyc --reporter=html --reporter=text mocha --timeout 20000 --recursive src/api/tests --exit",
+    "test:unit": "cross-env NODE_ENV=test mocha --recursive src/api/tests/unit",
+    "test:integration": "cross-env NODE_ENV=test mocha --timeout 20000 src/api/tests/integration --exit",
+    "test:specific": "cross-env NODE_ENV=test mocha --timeout 20000 --exit $1 ",
+    "test:watch": "cross-env NODE_ENV=test mocha --watch src/api/tests/unit",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "postcoverage": "opn coverage/lcov-report/index.html",
+    "validate": "npm run lint && npm run test",
+    "postpublish": "git push --tags"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run precommit"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Lzok/telegraph"
+  },
+  "keywords": [
+    "Telegraph",
+    "Bits",
+    "Morse",
+    "Human Readable"
+  ],
+  "dependencies": {
+    "@hapi/joi": "17.1.1",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.2",
+    "date-fns": "^2.12.0",
+    "dotenv-safe": "^8.2.0",
+    "express": "^4.17.1",
+    "express-validation": "^3.0.2",
+    "helmet": "^3.22.0",
+    "http-status": "^1.4.2",
+    "mongoose": "^5.9.11",
+    "morgan": "^1.10.0",
+    "swagger-ui-express": "^4.1.4",
+    "uuid": "^8.0.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "chai-http": "^4.3.0",
+    "coveralls": "^3.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.1",
+    "mocha": "^7.1.2",
+    "nodemon": "^2.0.3",
+    "nyc": "^15.0.1",
+    "opn-cli": "^5.0.0",
+    "prettier-eslint": "^9.0.1",
+    "prettier-eslint-cli": "^5.0.0"
+  }
+}
