@@ -178,7 +178,6 @@ function decodeMorse2Human(morse) {
       .join(''))
     .join(' ');
 
-  console.log('HUMAN', h);
   return h;
 }
 
@@ -199,7 +198,6 @@ function decodeHuman2Morse(str) {
       .join(' '))
     .join('   ');
 
-  console.log('MORSE', m);
   return m;
 }
 
@@ -215,14 +213,8 @@ function decodeBits2Morse(bits) {
   const pulses = cleanPulses(pulsesRaw);
   const pulsesData = getPulsesData(pulses);
   const bitsCfg = getBitsCfg(pulsesData);
-  console.log(pulsesData);
-  console.log(bitsCfg);
-
-  console.log('PULSES', pulses);
 
   const acc = pulses.map((p) => getElement(p, bitsCfg)).join('');
-  console.log('RESULT', acc);
-  decodeMorse2Human(acc);
 
   return acc;
 }
@@ -261,8 +253,6 @@ function decodeMorse2Bits(str, bitLength = 2) {
         .join('')}${map.remainingPause}`,
     )
     .join('');
-
-  console.log(bits);
 
   decodeBits2Morse(bits);
   return bits;

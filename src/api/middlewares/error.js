@@ -2,6 +2,7 @@ const httpStatus = require('http-status');
 const expressValidation = require('express-validation');
 const APIError = require('../utils/APIError');
 const { env } = require('../../config/vars');
+const logger = require('../../config/logger');
 
 /**
  * Error handler. Send stacktrace only during development
@@ -18,6 +19,8 @@ const handler = (err, req, res, next) => {
   if (env !== 'development') {
     delete response.stack;
   }
+
+  logger.error('An error catched in handler middleware. Response: ', response);
 
   res.status(err.status);
   res.json(response);

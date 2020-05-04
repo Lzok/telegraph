@@ -7,6 +7,7 @@ const {
   receiveMorseWithOptQuery,
 } = require('../../validations/convert.validation');
 const APIError = require('../../utils/APIError');
+const logger = require('../../../config/logger');
 
 const router = express.Router();
 
@@ -20,6 +21,7 @@ router.post('/bits/morse', receiveBits, (req, res, next) => {
 
     return res.json({ text: converted });
   } catch (error) {
+    logger.error('Error in endpoint /api/v1/bits/morse.', { requestId: req.id, error });
     return next(error);
   }
 });
@@ -32,6 +34,7 @@ router.post('/morse/human', receiveMorse, (req, res, next) => {
 
     return res.json({ text: converted });
   } catch (error) {
+    logger.error('Error in endpoint /api/v1/morse/human.', { requestId: req.id, error });
     return next(error);
   }
 });
@@ -45,6 +48,7 @@ router.post('/morse/bits', receiveMorseWithOptQuery, (req, res, next) => {
 
     return res.json({ text: converted });
   } catch (error) {
+    logger.error('Error in endpoint /api/v1/morse/bits.', { requestId: req.id, error });
     return next(error);
   }
 });
@@ -57,6 +61,7 @@ router.post('/human/morse', receiveAlphanum, (req, res, next) => {
 
     return res.json({ text: converted });
   } catch (error) {
+    logger.error('Error in endpoint /api/v1/human/morse.', { requestId: req.id, error });
     return next(error);
   }
 });
