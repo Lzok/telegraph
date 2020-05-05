@@ -4,6 +4,7 @@ const {
   INTRASEP,
   CHARSEP,
   WORDSEP,
+  FULLSTOP,
   MORSE2ALPHA,
   ALPHA2MORSE,
 } = require('../../constants/morse');
@@ -54,6 +55,24 @@ function checkIfTimingIsPerfect(zeroPulses, onePulses) {
   });
 
   return !areOnesImperfect;
+}
+
+/**
+ * Check the given morse in case it has a full stop character
+ * so we can crop it (end of the message for the test purposes)
+ * and return the part to compute.
+ * I assume if there is no full stop character, the morse message
+ * lasts all its length.
+ * It would be great to implement some sort of mechanism to "hear"
+ * the pulses and calculate a long pause based on a long "silence".
+ *
+ * @param {string} morseStr - A morse string to be processed.
+ * @return {string} Morse string to be converted.
+ */
+function getMessageToProcess(morseStr) {
+  const periodExist = morseStr.indexOf(FULLSTOP);
+
+  return `${morseStr.split(FULLSTOP)[0]}${periodExist > -1 ? FULLSTOP : ''}`;
 }
 
 /**
@@ -168,8 +187,9 @@ function getBitsCfg({ isTimingPerfect, peaks }) {
  * @param {string} morse - String of morse code string to be converted into Human readable.
  * @return {string} string human readable
  */
-function decodeMorse2Human(morse) {
-  const h = morse
+function translate2Human(morse) {
+  const str = getMessageToProcess(morse);
+  const h = str
     .trim()
     .split('   ')
     .map((codes) => codes
@@ -219,23 +239,66 @@ function decodeBits2Morse(bits) {
   return acc;
 }
 
-function decodeMorse2Bits(str, bitLength = 2) {
+/**
+ * @typedef {Object} MapMorseBits
+ * @property {string} intraSep - Intra morse mark space
+ * @property {string} dit - Morse dot mark
+ * @property {string} dah - Morse dash mark
+ * @property {string} charSep - Char separator
+ * @property {string} wordSep - Word separator
+ * @property {string} remainingPause - Remaining pause to attach to a string
+ */
+
+/**
+ * @typedef {Object} CfgEncodeBits
+ * @property {string} intraSep - Intra morse mark space
+ * @property {string} charSep - Char separator
+ * @property {MapMorseBits} mapMorseBits - Object to map morse marks into its bit representation
+ *                                          based on the bit config
+ */
+
+/**
+ * Given the bit length, returns the config to encode morse code into bits.
+ *
+ * @param {number} bitLen - Bit Length
+ * @return {string} string in morse
+ */
+function getCfgToEncodeBits(bitLen) {
   const bitOn = '1';
   const bitOff = '0';
-  const dit = bitOn.repeat(bitLength);
+  const dit = bitOn.repeat(bitLen);
   const dah = dit.repeat(3);
-  const intraSep = bitOff.repeat(bitLength);
+  const intraSep = bitOff.repeat(bitLen);
   const charSep = intraSep.repeat(2);
   const wordSep = intraSep.repeat(7);
 
-  const map = {
+  const mapMorseBits = {
     '': intraSep,
     '.': dit,
     '-': dah,
     ' ': charSep,
     '   ': wordSep,
-    remainingPause: bitOff.repeat(bitLength * 7 - 3 * bitLength),
+    remainingPause: bitOff.repeat(bitLen * 7 - 3 * bitLen),
   };
+
+  return {
+    charSep,
+    intraSep,
+    mapMorseBits,
+  };
+}
+
+/**
+ * Given a morse string, convert it into a string of bits.
+ * The user can give us the bitLength
+ *
+ * @param {string} morseStr - Morse code string
+ * @param {number} [bitLength = 2] - Bit length for configuration.
+ * @return {string} String of bits representating the given morse code and the bit length
+ */
+function decodeMorse2Bits(morseStr, bitLength = 2) {
+  const str = getMessageToProcess(morseStr);
+  const { charSep, intraSep, mapMorseBits } = getCfgToEncodeBits(bitLength);
 
   // str = '.... .-   .... .-'
   const bits = str
@@ -247,14 +310,13 @@ function decodeMorse2Bits(str, bitLength = 2) {
         .map(
           (morseChar) => `${morseChar
             .split('') // First iteration: [ ".", ".", ".", "." ]
-            .map((morseBit) => `${map[morseBit]}${intraSep}`)
+            .map((morseBit) => `${mapMorseBits[morseBit]}${intraSep}`)
             .join('')}${charSep}`,
         )
-        .join('')}${map.remainingPause}`,
+        .join('')}${mapMorseBits.remainingPause}`,
     )
     .join('');
 
-  decodeBits2Morse(bits);
   return bits;
 }
 
@@ -264,11 +326,13 @@ module.exports = {
   decodeBits2Morse,
   decodeHuman2Morse,
   decodeMorse2Bits,
-  decodeMorse2Human,
+  translate2Human,
   getAverage,
   getBitsCfg,
   getCfgPerfectTiming,
+  getCfgToEncodeBits,
   getElement,
+  getMessageToProcess,
   getOccurrenceExtreme,
   getPulsesData,
   partitionPulses,

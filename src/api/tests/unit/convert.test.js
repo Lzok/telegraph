@@ -10,11 +10,13 @@ const {
   decodeBits2Morse,
   decodeHuman2Morse,
   decodeMorse2Bits,
-  decodeMorse2Human,
+  translate2Human,
   getAverage,
   getBitsCfg,
   getCfgPerfectTiming,
+  getCfgToEncodeBits,
   getElement,
+  getMessageToProcess,
   getOccurrenceExtreme,
   getPulsesData,
   partitionPulses,
@@ -58,7 +60,7 @@ describe('Scripts', () => {
     const morse = '... -.-. .... .. ... --   -... -.--   - --- --- .-..';
     const human = 'SCHISM BY TOOL';
 
-    const decoded = decodeMorse2Human(morse);
+    const decoded = translate2Human(morse);
     expect(decoded).to.be.equal(human);
 
     done();
@@ -106,7 +108,7 @@ describe('Scripts', () => {
     done();
   });
 
-  it('Should getCfgPerfectTiming function returns the correct data', (done) => {
+  it('Should getCfgPerfectTiming function return the correct data', (done) => {
     const data = {
       bitLen: 3,
       limitDot: 9,
@@ -115,6 +117,25 @@ describe('Scripts', () => {
     };
 
     const result = getCfgPerfectTiming(3);
+    expect(result).to.be.deep.eq(data);
+    done();
+  });
+
+  it('Should getCfgToEncodeBits function return the correct data', (done) => {
+    const data = {
+      charSep: '0000',
+      intraSep: '00',
+      mapMorseBits: {
+        '': '00',
+        '.': '11',
+        '-': '111111',
+        ' ': '0000',
+        '   ': '00000000000000',
+        remainingPause: '00000000',
+      },
+    };
+
+    const result = getCfgToEncodeBits(2);
     expect(result).to.be.deep.eq(data);
     done();
   });
@@ -263,6 +284,27 @@ describe('Scripts', () => {
       const morseOk = '..- .--.   .- --. .- .. -. ... -   - .... .   ...- --- .. -..';
 
       const result = decodeHuman2Morse(humanStr);
+
+      expect(result).to.be.eq(morseOk);
+      done();
+    });
+  });
+
+  describe('Suite for getMessageToProcess function', () => {
+    it('Should return the morse string without modifications because it has not a full stop (.-.-.-)', (done) => {
+      const morse = '..- .--.   .- --. .- .. -. ... -   - .... .   ...- --- .. -..';
+
+      const result = getMessageToProcess(morse);
+
+      expect(result).to.be.eq(morse);
+      done();
+    });
+
+    it('Should return the morse string before the full stop (.-.-.-) including it.', (done) => {
+      const morse = '..- .--.   .- --. .- .. -. ... -   .-.-.- - .... .   ...- --- .. -..';
+      const morseOk = '..- .--.   .- --. .- .. -. ... -   .-.-.-';
+
+      const result = getMessageToProcess(morse);
 
       expect(result).to.be.eq(morseOk);
       done();

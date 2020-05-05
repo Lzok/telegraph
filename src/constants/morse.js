@@ -3,6 +3,7 @@ const DAH = '-';
 const INTRASEP = '';
 const CHARSEP = ' ';
 const WORDSEP = '   ';
+const FULLSTOP = '.-.-.-';
 
 const MORSE2ALPHA = {
   '.-': 'A',
@@ -53,6 +54,7 @@ module.exports = {
   INTRASEP,
   CHARSEP,
   WORDSEP,
+  FULLSTOP,
   ALPHA2MORSE,
   MORSE2ALPHA,
 };

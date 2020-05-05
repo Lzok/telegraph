@@ -115,6 +115,21 @@ describe('Convert API', () => {
         });
     });
 
+    it('Should return the correct translation just until the full stop char (.-.-.-)', (done) => {
+      const body = { text: '.... . -.-- .-.-.- .... .' };
+
+      chai
+        .request(SERVER_URL)
+        .post('/api/v1/convert/morse/human')
+        .send(body)
+        .end((err, res) => {
+          if (err) done(err);
+          expect(res.status).to.be.eq(200);
+          expect(res.body).to.have.property('text', 'HEY.');
+          done();
+        });
+    });
+
     it('Should return bad request if an empty body is sent', (done) => {
       chai
         .request(SERVER_URL)
