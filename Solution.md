@@ -136,7 +136,7 @@ Para el payload nos da como resultado:
 
 3.4. Obtengo el promedio de ambos arrays (por separado) [funcion](https://github.com/Lzok/telegraph/blob/093583cc124d7f233cfb88b94d2056524d18a1c5/src/api/utils/convertion.js#L18)
 
-4. Con la informacion obtenida del punto 3, ahora utilizo una funcion para obtener la configuracion que voy a usar en este payload. [<funcion>([https://github.com/Lzok/telegraph/blob/093583cc124d7f233cfb88b94d2056524d18a1c5/src/api/utils/convertion.js#L159](https://github.com/Lzok/telegraph/blob/093583cc124d7f233cfb88b94d2056524d18a1c5/src/api/utils/convertion.js#L159))
+4. Con la informacion obtenida del punto 3, ahora utilizo una funcion para obtener la configuracion que voy a usar en este payload. [<funcion>](https://github.com/Lzok/telegraph/blob/093583cc124d7f233cfb88b94d2056524d18a1c5/src/api/utils/convertion.js#L159)
 
 Si el timing es perfecto, no hay mas que hacer, ya sabemos que configuracion se va a utilizar porque ya la calculamos en el paso anterior.
 
