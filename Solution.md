@@ -177,8 +177,9 @@ que me retorne que caracter morse es el correspondiente. [funcion](https://githu
 Esta funcion simplemente mira si es un pulso o una pausa, y en base a la configuracion que obtuve en el punto **4**, me devuelve que tipo de marca morse es (dot, dash o alguna de las separaciones).
 
 5.1. Para convertir el morse a *humano*, use un objeto de javascript mapeando los caracteres morse con el alfabeto. [<objeto>]([https://github.com/Lzok/telegraph/blob/093583cc124d7f233cfb88b94d2056524d18a1c5/src/constants/morse.js#L8](https://github.com/Lzok/telegraph/blob/093583cc124d7f233cfb88b94d2056524d18a1c5/src/constants/morse.js#L8))
+Tambien use como alternativa el arbol morse aplicando *dichotomic search* en el metodo llamado **decodeMorse2HumanDichotomy**
 
-El mismo resultado puede ser obtenido utilizando un arbol aplicando [*dichotomic search*]([https://en.wikipedia.org/wiki/Dichotomic_search](https://en.wikipedia.org/wiki/Dichotomic_search)) o incluso un array conformado de la siguiente forma:
+El mismo resultado puede ser obtenido utilizando un array conformado de la siguiente forma:
 
 `[' ', 'ET', 'IANM', 'SURWDKGO', 'HVF L PJBXCYZQ ', '54 3 2 16 7 8 90']`
 

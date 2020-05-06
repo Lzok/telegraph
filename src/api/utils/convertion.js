@@ -7,6 +7,7 @@ const {
   FULLSTOP,
   MORSE2ALPHA,
   ALPHA2MORSE,
+  MORSETREE,
 } = require('../../constants/morse');
 const { SEPARATEPULSES } = require('../../constants/regexes');
 
@@ -320,6 +321,30 @@ function decodeMorse2Bits(morseStr, bitLength = 2) {
   return bits;
 }
 
+function decodeWithDicothomyTree(node, chars) {
+  const cur = chars.shift();
+
+  if (!node[cur]) return node.val || '(?)';
+
+  return decodeWithDicothomyTree(node[cur], chars);
+}
+
+function decodeMorse2HumanDichotomy(morseStr) {
+  const words = morseStr.split('   ');
+
+  const res = words // ['.... --- .-.. .-', '-- . .-.. ..']
+    .flatMap((word) => {
+      // word = ['.... --- .-.. .-']
+      const decodedWord = word
+        .split(' ') // ['....', '---', '.-..', '.-']
+        .reduce((acc, cur) => [...acc, decodeWithDicothomyTree(MORSETREE, cur.split(''))], []); // cur = ['....']
+      return [decodedWord.join(''), ' '];
+    })
+    .join('');
+
+  return res;
+}
+
 module.exports = {
   cleanPulses,
   checkIfTimingIsPerfect,
@@ -327,6 +352,7 @@ module.exports = {
   decodeHuman2Morse,
   decodeMorse2Bits,
   translate2Human,
+  decodeMorse2HumanDichotomy,
   getAverage,
   getBitsCfg,
   getCfgPerfectTiming,

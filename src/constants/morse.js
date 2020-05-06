@@ -1,3 +1,5 @@
+const { TREE: MORSETREE } = require('./tree');
+
 const DIT = '.';
 const DAH = '-';
 const INTRASEP = '';
@@ -57,4 +59,5 @@ module.exports = {
   FULLSTOP,
   ALPHA2MORSE,
   MORSE2ALPHA,
+  MORSETREE,
 };

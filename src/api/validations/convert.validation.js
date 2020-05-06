@@ -23,6 +23,12 @@ const bitLengthQSchema = Joi.object({
   bitLength: Joi.number().min(1),
 }).unknown(false);
 
+const methodMorseSchema = Joi.object({
+  method: Joi.string()
+    .valid('dichotomy', 'mappedObj')
+    .default('mappedObj'),
+}).unknown(false);
+
 const receiveBits = async (req, res, next) => {
   try {
     await receiveBitsSchema.validateAsync(req.body);
@@ -34,7 +40,10 @@ const receiveBits = async (req, res, next) => {
 
 const receiveMorse = async (req, res, next) => {
   try {
-    await receiveMorseSchema.validateAsync(req.body);
+    await Promise.all([
+      receiveMorseSchema.validateAsync(req.body),
+      methodMorseSchema.validateAsync(req.query),
+    ]);
   } catch (error) {
     return res.status(400).json({ error: error.details[0].message });
   }

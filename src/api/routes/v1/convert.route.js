@@ -28,9 +28,10 @@ router.post('/bits/morse', receiveBits, (req, res, next) => {
 
 router.post('/morse/human', receiveMorse, (req, res, next) => {
   const { text } = req.body;
+  const { method } = req.query;
 
   try {
-    const converted = controller.morse2human(text);
+    const converted = controller.morse2human(text, method);
 
     return res.json({ text: converted });
   } catch (error) {
