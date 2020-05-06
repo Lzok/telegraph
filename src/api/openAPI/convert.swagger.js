@@ -63,6 +63,18 @@ const morse2human = {
   tags: ['Morse2Human'],
   description: 'Converts a given string of morse code into a human readable string.',
   operationId: 'morse2human',
+  parameters: [
+    {
+      in: 'query',
+      name: 'method',
+      description:
+        'Method to use for decoding. Valid values are "dichotomy" and "mappedObj". The default is mappedObj',
+      schema: {
+        type: 'string',
+      },
+      required: false,
+    },
+  ],
   requestBody: {
     description: 'String of morse code to convert into a human readable string.',
     required: true,
