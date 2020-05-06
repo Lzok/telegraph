@@ -5,3 +5,6 @@ dist
 node_modules
 coverage
 docs
+README.md
+Problem.md
+Solution.md
