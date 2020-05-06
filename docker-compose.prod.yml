@@ -1,0 +1,8 @@
+version: '3'
+services:
+  node:
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+    command: 'npm run prod'

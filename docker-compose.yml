@@ -1,27 +1,7 @@
-version: "3"
+version: '3'
 services:
-
   node:
-    build:
-      context: .
-      args:
-        - NODE_ENV=production
-    user: "node"
+    user: 'node'
     build: .
-    volumes:
-      - .:/usr/src/app
     ports:
-      - '3000:3000'
-    command: "node ./src/index.js"
-    volumes:
-      - .:/usr/src/app/app:delegated
-      - ./package.json:/usr/src/app/package.json
-      - ./package-lock.json:/usr/src/app/package-lock.json
-      # this is a workaround to prevent host node_modules from accidently getting mounted in container
-      # in case you want to use node/npm both outside container for test/lint etc. and also inside container
-      # this will overwrite the default node_modules dir in container so it won't conflict with our
-      # /usr/src/app/node_modules location.
-      - notused:/usr/src/app/node_modules
-
-volumes:
-  notused:
+      - '${PORT}:3000'

@@ -18,12 +18,15 @@ RUN chown node:node /usr/src/app
 
 USER node
 COPY package.json package-lock.json* ./
-RUN npm install --production
+
+RUN if [ "$NODE_ENV" = "development" ]; \
+	then npm install;  \
+	else npm install --production; \
+	fi
+
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
 
 # copy in our source code last, as it changes the most
 COPY . .
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
-
-CMD [ "node", "./src/index.js" ]

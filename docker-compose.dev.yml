@@ -1,0 +1,21 @@
+version: '3'
+services:
+  node:
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+    command: 'npm run dev'
+    volumes:
+      - .:/usr/src/app
+      - .:/usr/src/app/app:delegated
+      - ./package.json:/usr/src/app/package.json
+      - ./package-lock.json:/usr/src/app/package-lock.json
+      # this is a workaround to prevent host node_modules from accidently getting mounted in container
+      # in case you want to use node/npm both outside container for test/lint etc. and also inside container
+      # this will overwrite the default node_modules dir in container so it won't conflict with our
+      # /usr/src/app/node_modules location.
+      - notused:/usr/src/app/app/node_modules
+
+volumes:
+  notused:
