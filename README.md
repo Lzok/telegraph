@@ -107,10 +107,12 @@ Se puede probar el build de la imagen productiva que genera docker con el siguie
 `docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --force-recreate --build`
 
 ## Proximos pasos
-- Implementar busqueda dicotomica con un arbol
-- Implementar a modo de prueba la busqueda en lista.
-- **Game changer level**: Plantear pruebas utilizando algoritmos de clusterizacion como K-means para asi poder, en teoria,
-decodificar mensajes que no sean constantes dentro del mismo.
+**TODO:**
+- Mejorar el manejo de errores en las funciones, muchas no estan preparadas para recibir otra cosa que lo que esperan. Empezar al menos por las funciones que se comunican con el "mundo exterior".
+- Agregar tests para las cosas nuevas que se fueron agregando.
+- Correr la suite de tests completa en el pre-commit. En este momento solo corren los unitarios.
+- Plantear pruebas utilizando algoritmos de clusterizacion como K-means para asi poder, en teoria,
+decodificar mensajes que no sean constantes dentro del mismo. (Ver [documento explicatorio](https://github.com/Lzok/telegraph/blob/master/Solution%20KMeans.md))
 
 ## Referencias
 Lista de referencias utilizadas acerca del tema durante el desarrollo. Todas ellas online al dia de la fecha (05-05-2020)
