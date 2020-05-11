@@ -47,6 +47,9 @@ const swaggerDocument = {
     '/convert/human/morse': {
       post: human2morse,
     },
+    '/experimental/bits/morse': {
+      post: bits2morse,
+    },
   },
 };
 
