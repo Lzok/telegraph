@@ -1,6 +1,5 @@
 const { arrayStrictEqual } = require('./arrays');
 const { SEPARATEPULSES, TRIMZEROS } = require('../../constants/regexes');
-const logger = require('../../config/logger');
 const {
   DIT, DAH, INTRASEP, CHARSEP, WORDSEP,
 } = require('../../constants/morse');
@@ -21,7 +20,7 @@ function getClusters(keys) {
     centroid: keys[0],
   };
   const cluster2 = {
-    centroid: (keys[keys.length - 1] + keys[0]) / 2,
+    centroid: Math.round((keys[keys.length - 1] + keys[0]) / 2),
   };
   const cluster3 = {
     centroid: keys[keys.length - 1],
@@ -96,7 +95,11 @@ function recalculateCentroid(clusters) {
 
 function calculateTimeUnits(clusters) {
   const cls = JSON.parse(JSON.stringify(clusters));
-  const timeUnits = [cls[0].centroid, cls[1].centroid, cls[2].centroid];
+  const timeUnits = [
+    Math.round(cls[0].centroid),
+    Math.round(cls[1].centroid),
+    Math.round(cls[2].centroid + 1),
+  ];
 
   return timeUnits;
 }
@@ -122,7 +125,7 @@ function getConfig(clusters, keys, distances) {
 
 function calculateThresholds(timeUnits) {
   const threshold1to3 = Math.round(((timeUnits[0] + timeUnits[1]) / 2) * 1.1);
-  const threshold3to7 = (timeUnits[1] + timeUnits[2]) / 2;
+  const threshold3to7 = Math.round(((timeUnits[1] + timeUnits[2]) / 2) * 0.94);
 
   return [threshold1to3, threshold3to7];
 }
@@ -135,8 +138,8 @@ function getElement(pulse, threshold1to3, threshold3to7) {
     if (pulseLen < threshold1to3) return DIT;
     return DAH;
   }
-  if (pulseLen >= threshold1to3 && pulseLen < threshold3to7) return CHARSEP;
-  if (pulseLen >= threshold3to7) return WORDSEP;
+  if (pulseLen >= threshold1to3 && pulseLen <= threshold3to7) return CHARSEP;
+  if (pulseLen > threshold3to7) return WORDSEP;
   return INTRASEP;
 }
 
@@ -156,16 +159,12 @@ function setupKMeansClusters(distances) {
 }
 
 function decodeBits2MorseKM(bits) {
-  logger.info('BITS: ', bits);
   const pulses = bits.replace(TRIMZEROS, '').match(SEPARATEPULSES);
   const distances = calculateDistance(pulses);
-
   const clusters = setupKMeansClusters(distances);
   const [threshold1to3, threshold3to7] = calculateThresholds(clusters.timeUnits);
 
   const morse = pulses.map((p) => getElement(p, threshold1to3, threshold3to7)).join('');
-
-  logger.info('MORSE: ', morse);
   return morse;
 }
 
