@@ -1,6 +1,7 @@
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const convertionRoutes = require('./convert.route');
+const experimentalRoutes = require('./experimental.route');
 const { swaggerDocument } = require('../../../config/swagger');
 
 const router = express.Router();
@@ -21,5 +22,6 @@ router.get('/healthcheck', (req, res) => {
 router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, { explorer: true }));
 
 router.use('/convert', convertionRoutes);
+router.use('/experimental', experimentalRoutes);
 
 module.exports = router;
