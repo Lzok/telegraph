@@ -8,6 +8,7 @@ Telegraph to help us converting a string of bits into morse code or human readab
     - [Produccion](#Produccion)
 - [Problema](#Problema)
 - [Planteo de solucion](#Planteo-de-solucion)
+    - [Solucion experimental](#Solucion-experimental)
 - [Proximos pasos](#Proximos-pasos)
 - [Referencias](#Referencias)
 - [Licencia](#Licencia)
@@ -29,6 +30,11 @@ El enunciado completo del problema puede encontrarse [aca](https://github.com/Lz
 ## Planteo de solucion
 
 En [este documento](https://github.com/Lzok/telegraph/blob/master/Solution.md) describo la forma en que pense la solucion del problema.
+
+### Solucion experimental
+En [este otro documento](https://github.com/Lzok/telegraph/blob/master/Solution%20KMeans.md) describo la forma en que resuelvo este problema utilizando un algoritmo de clusterizacion llamado K-Means, adaptado particularmente a esta situacion.
+
+Esta solucion esta en etapa **experimental**, tomar recaudos. Toda contribucion a mejorarla y estabilizarla es bienvenida y apreciada!
 
 ## Setup
 
