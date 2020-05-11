@@ -9,12 +9,5 @@ exports.arrayCompare = (f) => ([x, ...xs]) => ([y, ...ys]) => (areUndefined(x, y
 // strict equal :: a -> a -> Bool
 exports.strictArrayEq = (x) => (y) => x === y;
 
-// non strict equal :: [a] -> [a] -> Bool
-// eslint-disable-next-line eqeqeq
-exports.nonStrictArrayEq = (x) => (y) => x == y;
-
 // arrayStrictEqual :: [a] -> [a] -> Bool
 exports.arrayStrictEqual = this.arrayCompare(this.strictArrayEq);
-
-// arrayNonStrictEqual :: [a] -> [a] -> Bool
-exports.arrayNonStrictEqual = this.arrayCompare(this.nonStrictArrayEq);
