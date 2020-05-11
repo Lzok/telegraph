@@ -262,5 +262,6 @@ const threshold3to7 = Math.round(((timeUnits[1] + timeUnits[2]) / 2) * 0.94);
 
 ## TODO
 - Mejorar este documento, no esta explicado de forma muy clara.
+- Mejorar algunos nombres de funciones, constantes, etc. Algunos no son claros.
 - Encontrar mejores vias de calculo para **idealmente** no tener que usar valores ajustados a mano.
 - Hacer una bateria de tests diversa y amplia para seguir mejorando la solucion y abarcar quizas mas casos de uso dentro del espectro bits->morse->human.

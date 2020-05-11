@@ -4,6 +4,13 @@ const {
   DIT, DAH, INTRASEP, CHARSEP, WORDSEP,
 } = require('../../constants/morse');
 
+/**
+ * Calculate the distance of the pulses.
+ *
+ * @param {string[]} pulses - An array of pulses of 0s and 1s like ['000', '111', '00']
+ * @return {Object} Retuns an object containing key=pulse lengh and value=quantity of pulses
+ *                    with the key lenght
+ */
 function calculateDistance(pulses) {
   return pulses.reduce((acc, cur) => {
     const len = cur.length;
@@ -14,7 +21,17 @@ function calculateDistance(pulses) {
   }, {});
 }
 
-// Arbitrary 3 clusters.
+/**
+ * @typedef {Object} InitCluster
+ * @property {number} centroid - Centroid value
+ */
+
+/**
+ * Return the initialized clusters (3).
+ *
+ * @param {number[]} keys - An array of pulses of 0s and 1s like ['000', '111', '00']
+ * @return {InitCluster[]}
+ */
 function getClusters(keys) {
   const cluster1 = {
     centroid: keys[0],
@@ -29,6 +46,21 @@ function getClusters(keys) {
   return [cluster1, cluster2, cluster3];
 }
 
+/**
+ * @typedef {Object} Cluster
+ * @property {number} centroid - Centroid value
+ * @property {number[]} points - Points associated with the cluster
+ */
+
+/**
+ * Calculate the best cluster for the given value (key) and associate
+ * the points to that cluster.
+ *
+ * @param {Cluster[]} clusters - Array of clusters.
+ * @param {number} key - Value to be associated with a cluster.
+ * @param {Object} distances - Calculated distances of the pulses.
+ * @return {Cluster} cluster - Returns the nearest cluster to the key with the points associated.
+ */
 function calculateBestCluster(clusters, key, distances) {
   const init = {
     cluster: null,
@@ -60,6 +92,15 @@ function reduceTocluster(acc, cur) {
   return acc;
 }
 
+/**
+ * Receive the array of clusters and keys to be associated with the nearest
+ * clusters.
+ *
+ * @param {Cluster[]} clusters - Array of clusters.
+ * @param {number[]} keys - Values to be associated with its nearest cluster.
+ * @param {Object} distances - Calculated distances of the pulses.
+ * @return {Cluster[]} clusters - Returns the clusters with the associated keys and points.
+ */
 function assignToCluster(clusters, keys, distances) {
   const clustersClone = JSON.parse(JSON.stringify(clusters));
   return keys
@@ -67,10 +108,19 @@ function assignToCluster(clusters, keys, distances) {
     .reduce(reduceTocluster, []);
 }
 
+/**
+ * Check if two arrays of clusters are equals or not.
+ *
+ * @param {Cluster[]} oldClusters - Array of clusters.
+ * @param {Cluster[]} newClusters - Array of clusters.
+ * @return {boolean} Return true if the oldClusters and newClusters are equals.
+ */
 function checkIfConverge(oldClusters, newClusters) {
   const oldPoints = oldClusters.map((oc) => oc.points);
   const newPoints = newClusters.map((nc) => nc.points);
   const result = oldPoints.filter((p, idx) => arrayStrictEqual(p, newPoints[idx]));
+
+  // Assume if the lengths are the same is because the clusters did not change. So they converged.
   return result.length === newPoints.length;
 }
 
@@ -81,6 +131,12 @@ function checkIfConverge(oldClusters, newClusters) {
  */
 const average = (numbers) => numbers.reduce((sum, val) => sum + val, 0) / numbers.length;
 
+/**
+ * Recalculate the centroid of the clusters and update them.
+ *
+ * @param {Cluster[]} clusters - Array of clusters.
+ * @return {Cluster[]} Return the clusters with the updated centroids.
+ */
 function recalculateCentroid(clusters) {
   const cls = JSON.parse(JSON.stringify(clusters));
 
@@ -93,6 +149,12 @@ function recalculateCentroid(clusters) {
   });
 }
 
+/**
+ * Given an array of clusters, calculate the timeUnits.
+ *
+ * @param {Cluster[]} clusters - Array of clusters.
+ * @return {number[]} Return the array of timeUnits
+ */
 function calculateTimeUnits(clusters) {
   const cls = JSON.parse(JSON.stringify(clusters));
   const timeUnits = [
@@ -104,6 +166,20 @@ function calculateTimeUnits(clusters) {
   return timeUnits;
 }
 
+/**
+ * @typedef {Object} Config
+ * @property {Clusters[]} clusters - Array of clusters
+ * @property {number[]} timeUnits - timeUnits for the clusters.
+ */
+
+/**
+ * Calculate the necessary values to make the config to be used later.
+ *
+ * @param {Cluster[]} clusters - Array of clusters.
+ * @param {number[]} keys - Values to be associated with its nearest cluster.
+ * @param {Object} distances - Calculated distances of the pulses.
+ * @return {Config} config - Return the config.
+ */
 function getConfig(clusters, keys, distances) {
   const clustersClone = JSON.parse(JSON.stringify(clusters));
   let isConverged = false;
@@ -123,6 +199,12 @@ function getConfig(clusters, keys, distances) {
   };
 }
 
+/**
+ * Given the timeUnits, calculate the thresholds.
+ *
+ * @param {number[]} timeUnits
+ * @return {number[]} Return the calculated thresholds
+ */
 function calculateThresholds(timeUnits) {
   const threshold1to3 = Math.round(((timeUnits[0] + timeUnits[1]) / 2) * 1.1);
   const threshold3to7 = Math.round(((timeUnits[1] + timeUnits[2]) / 2) * 0.94);
@@ -130,6 +212,14 @@ function calculateThresholds(timeUnits) {
   return [threshold1to3, threshold3to7];
 }
 
+/**
+ * Based on the pulse and the thresholds, return the correspond element in morse.
+ *
+ * @param {string} pulse - A pulse e.g '1111'
+ * @param {number} threshold1to3 - Threshold between duration 1 to 3.
+ * @param {number} threshold3to7 - Threshold between duration 3 to 7
+ * @return {string} The corresponding morse element -> .|-| |   |.
+ */
 function getElement(pulse, threshold1to3, threshold3to7) {
   const pulseType = pulse[0];
   const pulseLen = pulse.length;
@@ -143,6 +233,12 @@ function getElement(pulse, threshold1to3, threshold3to7) {
   return INTRASEP;
 }
 
+/**
+ * Setup the clusters and return the configs
+ *
+ * @param {Object} distances - Calculated distances of the pulses.
+ * @return {Config}
+ */
 function setupKMeansClusters(distances) {
   const keys = Object.keys(distances).map(parseFloat);
   const keysLen = keys.length;
@@ -158,6 +254,13 @@ function setupKMeansClusters(distances) {
   return getConfig(clusters, keys, distances);
 }
 
+/**
+ * Given a string of bits, translates it into morse code.
+ * The bits may be in perfect or imperfect timing
+ *
+ * @param {string} bits - String of bits
+ * @return {string} string in morse
+ */
 function decodeBits2MorseKM(bits) {
   const pulses = bits.replace(TRIMZEROS, '').match(SEPARATEPULSES);
   const distances = calculateDistance(pulses);

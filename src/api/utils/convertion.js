@@ -95,7 +95,7 @@ function getMessageToProcess(morseStr) {
 /**
  * Get some useful data from the pulses for later use.
  *
- * @param {string} pulses - An array of pulses of 0s and 1s like ['000', '111', '00']
+ * @param {string[]} pulses - An array of pulses of 0s and 1s like ['000', '111', '00']
  * @return {PulsesData} Useful data about the pulses to be used later.
  */
 function getPulsesData(pulses) {
